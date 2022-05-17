@@ -16,11 +16,19 @@ export class DataService {
   }
 
   private getOrderByName(query:string) {
-    let orderBy = query.slice(query.indexOf('&orderBy=') + 9);
+    let orderBy = null;
 
-    orderBy = orderBy.slice(0, orderBy.indexOf('&'))
-      .replace('-', '')
-      .replace('+', '');
+    const startingIndex = query.indexOf('&orderBy=');
+    if (startingIndex > 0) {
+      orderBy = query.slice(startingIndex + 9);
+
+      const lastIndex = orderBy.indexOf('&');
+      if (lastIndex > 0) {
+        orderBy = orderBy.slice(0, lastIndex);
+      }
+
+      orderBy =  orderBy.replace('-', '').replace('+', '');
+    }
 
     return orderBy;
   }
@@ -29,7 +37,7 @@ export class DataService {
     let results:any[] = [];
 
     return this.http.get(
-      'assets/data.csv',
+      'assets/dataAll.csv',
       {
         responseType: 'text'
       }
@@ -43,6 +51,7 @@ export class DataService {
                 const name = this.getOrderByName(row[3]);
                 const value = parseInt(row[4]);
 
+                if (name) {
                   let entry = results.find(
                     (result: any) => {
                       return result.name === name;
@@ -67,6 +76,7 @@ export class DataService {
                   entry.value = entry.total / entry.count;
 
                   entry.data.push(file);
+                }
               }
             }
           );
