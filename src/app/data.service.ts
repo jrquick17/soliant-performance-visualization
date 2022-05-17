@@ -55,7 +55,8 @@ export class DataService {
                       query: row[3],
                       count: 0,
                       total: 0,
-                      value: 0
+                      value: 0,
+                      data: []
                     };
 
                     results.push(entry);
@@ -64,6 +65,8 @@ export class DataService {
                   entry.count++;
                   entry.total += value;
                   entry.value = entry.total / entry.count;
+
+                  entry.data.push(file);
               }
             }
           );

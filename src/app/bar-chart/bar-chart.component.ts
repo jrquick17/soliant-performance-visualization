@@ -8,10 +8,11 @@ import {DataService} from "../data.service";
   styleUrls: ['./bar-chart.component.scss']
 })
 export class BarChartComponent {
+  displayValues: any[] = [];
   isLoading: boolean = true;
   results: any = [];
   xAxisLabel = 'Fields';
-  yAxisLabel = 'Avg (MS)';
+  yAxisLabel = 'Avg (S)';
 
   constructor(
     private data:DataService
@@ -36,6 +37,12 @@ export class BarChartComponent {
   }
 
   onSelect(event: any) {
-    console.log(event);
+    let entry = this.results.find(
+      (result: any) => {
+        return result.name === event.name;
+      }
+    );
+
+    this.displayValues = entry.data;
   }
 }
