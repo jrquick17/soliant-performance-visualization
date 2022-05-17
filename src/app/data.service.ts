@@ -53,6 +53,26 @@ export class DataService {
     return results;
   }
 
+  private getCountName(query:string) {
+    let results = [];
+
+    const startingIndex = query.indexOf('count=');
+    if (startingIndex >= 0) {
+      let orderBy = query.slice(startingIndex + 6);
+
+      const lastIndex = orderBy.indexOf('&');
+      if (lastIndex >= 0) {
+        orderBy = orderBy.slice(0, lastIndex);
+      }
+
+      orderBy =  orderBy.replace('-', '').replace('+', '');
+
+      results.push(orderBy);
+    }
+
+    return results;
+  }
+
   public get(type:string):Observable<any[]> {
     let results:any[] = [];
 
@@ -72,6 +92,9 @@ export class DataService {
               if (index !== 0 && typeof row[4] === 'string' && typeof row[3] === 'string') {
                 let names:any[] = [];
                 switch (type) {
+                  case 'count':
+                    names = this.getCountName(row[3]);
+                    break;
                   case 'fields':
                     names = this.getFieldNames(row[3]);
                     break;
