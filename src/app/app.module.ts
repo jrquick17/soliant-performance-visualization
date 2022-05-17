@@ -6,6 +6,9 @@ import {AppComponent} from './app.component';
 import {BarChartComponent} from './bar-chart/bar-chart.component';
 import {BarChartModule, NgxChartsModule} from "@swimlane/ngx-charts";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
+import {HttpClientModule} from "@angular/common/http";
+import {NgxCsvParserModule} from "ngx-csv-parser";
+import {DataService} from "./data.service";
 
 @NgModule({
   declarations: [
@@ -16,10 +19,14 @@ import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
     BrowserModule,
     BrowserAnimationsModule,
     AppRoutingModule,
+    HttpClientModule,
     BarChartModule,
-    NgxChartsModule
+    NgxChartsModule,
+    NgxCsvParserModule
   ],
-  providers: [],
+  providers: [
+    DataService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
