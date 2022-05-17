@@ -13,7 +13,7 @@ export class BarChartComponent {
   results: any = [];
   type:string = 'fields';
   xAxisLabel = 'Fields';
-  yAxisLabel = 'Avg (S)';
+  yAxisLabel = 'Avg (MS)';
 
   constructor(
     private data:DataService

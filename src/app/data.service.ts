@@ -202,7 +202,7 @@ export class DataService {
             }
           );
 
-          results = results.splice(0, 25);
+          results = results.slice(0, 30);
 
           console.log(results);
 
