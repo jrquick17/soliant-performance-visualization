@@ -33,6 +33,33 @@ export class DataService {
     return results;
   }
 
+  private getWhereNames(query:string) {
+    let results:any[] = [];
+
+    const startingIndex = query.indexOf('where=');
+    if (startingIndex >= 0) {
+      let fields = query.slice(startingIndex + 6);
+
+      const lastIndex = fields.indexOf('&');
+      if (lastIndex >= 0) {
+        fields = fields.slice(0, lastIndex);
+      }
+
+      results = results.concat(fields.split(' AND '));
+
+      results.forEach(
+        (result) => {
+          result = result.splice(result.indexOf('<'));
+          result = result.splice(result.indexOf('>'));
+          result = result.splice(result.indexOf('!'));
+          result = result.splice(result.indexOf('='));
+        }
+      )
+    }
+
+    return results;
+  }
+
   private getOrderByName(query:string) {
     let results = [];
 
@@ -100,6 +127,9 @@ export class DataService {
                     break;
                   case 'orderBy':
                     names = this.getOrderByName(row[3]);
+                    break;
+                  case 'where':
+                    names = this.getWhereNames(row[3]);
                     break;
                 }
 
