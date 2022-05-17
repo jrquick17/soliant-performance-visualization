@@ -1,10 +1,14 @@
-<p *ngIf="isLoading">Loading...</p>
-
 <button type="button" (click)="changeType('fields')">Fields</button>
 <button type="button" (click)="changeType('where')">Where</button>
 <button type="button" (click)="changeType('orderBy')">Order By</button>
 <button type="button" (click)="changeType('count')">Count</button>
 <button type="button" (click)="changeType('showTotalMatched')">Show Total</button>
+
+<p *ngIf="isLoading">Loading...</p>
+
+<div *ngIf="!isLoading">
+  Currently Viewing: {{ type }}
+</div>
 
 <ngx-charts-bar-vertical *ngIf="!isLoading"
                          [view]="[ 1000, 1000 ]"
