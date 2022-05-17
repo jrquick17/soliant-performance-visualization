@@ -10,18 +10,26 @@
   Currently Viewing: {{ type }}
 </div>
 
-<ngx-charts-bar-vertical *ngIf="!isLoading"
-                         [view]="[ 1500, 1000 ]"
-                         [results]="results"
-                         [gradient]="false"
-                         [xAxis]="true"
-                         [yAxis]="true"
-                         [legend]="true"
-                         [showXAxisLabel]="true"
-                         [showYAxisLabel]="true"
-                         [xAxisLabel]="xAxisLabel"
-                         [yAxisLabel]="yAxisLabel"
-                         (select)="onSelect($event)"></ngx-charts-bar-vertical>
+<div *ngIf="!isLoading">
+  <ngx-charts-bar-vertical [view]="[ chartHeight, chartHeight ]"
+                           [results]="results"
+                           [gradient]="false"
+                           [xAxis]="true"
+                           [yAxis]="true"
+                           [legend]="true"
+                           [showXAxisLabel]="true"
+                           [showYAxisLabel]="true"
+                           [xAxisLabel]="xAxisLabel"
+                           [yAxisLabel]="yAxisLabel"
+                           (select)="onSelect($event)"></ngx-charts-bar-vertical>
+</div>
+
+<div *ngIf="uniqueValues.length !== 0">
+  <p style="font-weight: bold; font-size: large;">UNIQUE CALL IDS</p>
+  <p *ngFor="let result of uniqueValues">
+    {{ result }}
+  </p>
+</div>
 
 <!--<div>-->
 <!--  <p *ngFor="let result of displayValues">-->

@@ -8,7 +8,10 @@ import {DataService} from "../data.service";
   styleUrls: ['./bar-chart.component.scss']
 })
 export class BarChartComponent {
+  chartHeight = 1000;
+  chartWidth = 1500;
   displayValues: any[] = [];
+  uniqueValues: any[] = [];
   isLoading: boolean = true;
   results: any = [];
   type:string = 'fields';
@@ -51,5 +54,6 @@ export class BarChartComponent {
     );
 
     this.displayValues = entry.data;
+    this.uniqueValues = entry.uniqueIDs;
   }
 }

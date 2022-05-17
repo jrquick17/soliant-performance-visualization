@@ -100,6 +100,26 @@ export class DataService {
     return results;
   }
 
+  private getUniqueCallID(query:string) {
+    let result = null;
+
+    const startingIndex = query.indexOf('uniqueCallId=');
+    if (startingIndex >= 0) {
+      let orderBy = query.slice(startingIndex + 13);
+
+      const lastIndex = orderBy.indexOf('&');
+      if (lastIndex >= 0) {
+        orderBy = orderBy.slice(0, lastIndex);
+      }
+
+      orderBy =  orderBy.replace('"', '');
+
+      result = orderBy;
+    }
+
+    return result;
+  }
+
   private getCountName(query:string) {
     let results = [];
 
@@ -174,7 +194,8 @@ export class DataService {
                           count: 0,
                           total: 0,
                           value: 0,
-                          data: []
+                          data: [],
+                          uniqueIDs: []
                         };
 
                         results.push(entry);
@@ -185,6 +206,7 @@ export class DataService {
                       entry.value = entry.total / entry.count;
 
                       entry.data.push(file);
+                      entry.uniqueIDs.push(this.getUniqueCallID(row[3]));
                     }
                   );
                 }
