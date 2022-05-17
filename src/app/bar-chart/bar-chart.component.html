@@ -4,6 +4,7 @@
 <button type="button" (click)="changeType('where')">Where</button>
 <button type="button" (click)="changeType('orderBy')">Order By</button>
 <button type="button" (click)="changeType('count')">Count</button>
+<button type="button" (click)="changeType('showTotalMatched')">Show Total</button>
 
 <ngx-charts-bar-vertical *ngIf="!isLoading"
                          [view]="[ 1000, 1000 ]"

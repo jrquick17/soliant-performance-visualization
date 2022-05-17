@@ -60,6 +60,26 @@ export class DataService {
     return results;
   }
 
+  private getShowName(query:string) {
+    let results = [];
+
+    const startingIndex = query.indexOf('showTotalMatched=');
+    if (startingIndex >= 0) {
+      let orderBy = query.slice(startingIndex + 17);
+
+      const lastIndex = orderBy.indexOf('&');
+      if (lastIndex >= 0) {
+        orderBy = orderBy.slice(0, lastIndex);
+      }
+
+      orderBy =  orderBy.replace('-', '').replace('+', '');
+
+      results.push(orderBy);
+    }
+
+    return results;
+  }
+
   private getOrderByName(query:string) {
     let results = [];
 
@@ -127,6 +147,9 @@ export class DataService {
                     break;
                   case 'orderBy':
                     names = this.getOrderByName(row[3]);
+                    break;
+                  case 'showTotalMatched':
+                    names = this.getShowName(row[3]);
                     break;
                   case 'where':
                     names = this.getWhereNames(row[3]);
