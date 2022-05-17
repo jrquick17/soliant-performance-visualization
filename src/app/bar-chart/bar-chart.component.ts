@@ -22,7 +22,7 @@ export class BarChartComponent {
   loadData() {
     this.isLoading = true;
 
-    this.data.get().pipe(
+    this.data.get('orderBy').pipe(
       finalize(
         () => {
           this.isLoading = false;

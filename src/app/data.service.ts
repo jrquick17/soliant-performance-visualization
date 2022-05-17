@@ -15,7 +15,17 @@ export class DataService {
 
   }
 
-  public get():Observable<any[]> {
+  private getOrderByName(query:string) {
+    let orderBy = query.slice(query.indexOf('&orderBy=') + 9);
+
+    orderBy = orderBy.slice(0, orderBy.indexOf('&'))
+      .replace('-', '')
+      .replace('+', '');
+
+    return orderBy;
+  }
+
+  public get(type:string):Observable<any[]> {
     let results:any[] = [];
 
     return this.http.get(
@@ -29,11 +39,10 @@ export class DataService {
           const csv = this.ngxCsvParser.csvStringToArray(file, ",");
           csv.forEach(
             (row, index) => {
-              if (index !== 0) {
-                const name = row[3];
+              if (index !== 0 && typeof row[3] === 'string') {
+                const name = this.getOrderByName(row[3]);
                 const value = parseInt(row[4]);
 
-                if (typeof name === 'string' && typeof value === 'number') {
                   let entry = results.find(
                     (result: any) => {
                       return result.name === name;
@@ -43,7 +52,7 @@ export class DataService {
                   if (!entry) {
                     entry = {
                       name: name,
-                      search: new URL("https://google.com/?" + name),
+                      query: row[3],
                       count: 0,
                       total: 0,
                       value: 0
@@ -55,7 +64,6 @@ export class DataService {
                   entry.count++;
                   entry.total += value;
                   entry.value = entry.total / entry.count;
-                }
               }
             }
           );
@@ -71,6 +79,8 @@ export class DataService {
           );
 
           results = results.splice(0, 25);
+
+          console.log(results);
 
           return results;
         }
