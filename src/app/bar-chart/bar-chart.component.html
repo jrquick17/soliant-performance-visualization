@@ -1,5 +1,8 @@
 <p *ngIf="isLoading">Loading...</p>
 
+<button type="button" (click)="changeType('fields')">Fields</button>
+<button type="button" (click)="changeType('orderBy')">Order By</button>
+
 <ngx-charts-bar-vertical *ngIf="!isLoading"
                          [view]="[ 1000, 1000 ]"
                          [results]="results"

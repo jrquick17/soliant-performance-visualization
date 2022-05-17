@@ -15,15 +15,33 @@ export class DataService {
 
   }
 
+  private getFieldNames(query:string) {
+    let results:any[] = [];
+
+    const startingIndex = query.indexOf('fields=');
+    if (startingIndex >= 0) {
+      let fields = query.slice(startingIndex + 7);
+
+      const lastIndex = fields.indexOf('&');
+      if (lastIndex >= 0) {
+        fields = fields.slice(0, lastIndex);
+      }
+
+      results = results.concat(fields.split(','));
+    }
+
+    return results;
+  }
+
   private getOrderByName(query:string) {
     let results = [];
 
-    const startingIndex = query.indexOf('&orderBy=');
-    if (startingIndex > 0) {
-      let orderBy = query.slice(startingIndex + 9);
+    const startingIndex = query.indexOf('orderBy=');
+    if (startingIndex >= 0) {
+      let orderBy = query.slice(startingIndex + 8);
 
       const lastIndex = orderBy.indexOf('&');
-      if (lastIndex > 0) {
+      if (lastIndex >= 0) {
         orderBy = orderBy.slice(0, lastIndex);
       }
 
@@ -49,9 +67,20 @@ export class DataService {
           const csv = this.ngxCsvParser.csvStringToArray(file, ",");
           csv.forEach(
             (row, index) => {
-              if (index !== 0 && typeof row[3] === 'string') {
-                const names = this.getOrderByName(row[3]);
-                const value = parseInt(row[4]);
+              row[3] = decodeURIComponent(row[3]);
+
+              if (index !== 0 && typeof row[4] === 'string' && typeof row[3] === 'string') {
+                let names:any[] = [];
+                switch (type) {
+                  case 'fields':
+                    names = this.getFieldNames(row[3]);
+                    break;
+                  case 'orderBy':
+                    names = this.getOrderByName(row[3]);
+                    break;
+                }
+
+                const value = parseInt(row[4].replace(',', ''));
 
                 if (names.length !== 0) {
                   names.forEach(

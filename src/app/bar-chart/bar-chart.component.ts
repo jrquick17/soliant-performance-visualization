@@ -11,6 +11,7 @@ export class BarChartComponent {
   displayValues: any[] = [];
   isLoading: boolean = true;
   results: any = [];
+  type:string = 'fields';
   xAxisLabel = 'Fields';
   yAxisLabel = 'Avg (S)';
 
@@ -20,10 +21,16 @@ export class BarChartComponent {
     this.loadData();
   }
 
+  changeType(type:string) {
+    this.type = type;
+
+    this.loadData();
+  }
+
   loadData() {
     this.isLoading = true;
 
-    this.data.get('orderBy').pipe(
+    this.data.get(this.type).pipe(
       finalize(
         () => {
           this.isLoading = false;
