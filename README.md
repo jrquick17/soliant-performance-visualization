@@ -23,3 +23,4 @@
 * Add checkboxes instead of buttons so that multiple params can be combined
 * Add ability to limit results via date range
 * Allow clicking unique ids to see the full log
+* Create enums for fields and data types

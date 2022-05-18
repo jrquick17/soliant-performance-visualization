@@ -4,6 +4,7 @@ import {HttpClient} from '@angular/common/http';
 import {NgxCsvParser} from 'ngx-csv-parser';
 import {Observable} from 'rxjs';
 import {EntryModel} from "./entry.model";
+import {DataServiceSettingsModel} from "./data-service-settings.model";
 
 @Injectable({
   providedIn: 'root'
@@ -20,11 +21,11 @@ export class DataService {
 
   }
 
-  public get(type: string): Observable<EntryModel[]> {
+  public get(settings: DataServiceSettingsModel): Observable<EntryModel[]> {
     let results: EntryModel[] = [];
 
     return this.http.get(
-      'assets/dataAll.csv',
+      'assets/' + settings.data + '.csv',
       {
         responseType: 'text'
       }
@@ -34,50 +35,66 @@ export class DataService {
           const csv = this.ngxCsvParser.csvStringToArray(file, ',');
           csv.forEach(
             (row, index) => {
-              const query = decodeURIComponent(row[3]);
+              if (index === 0) {
+                return;
+              } else if (row.length !== 5) {
+                return;
+              }
 
-              if (index !== 0 && typeof row[4] === 'string') {
-                let names = DataService._getNames(type, query);
-                const value = parseInt(row[4].replace(',', ''));
+              let query = row[3];
+              try {
+                query = decodeURIComponent(query);
+              } catch (_) {
+                return;
+              }
 
-                if (names.length !== 0) {
-                  names.forEach(
-                    (name: string) => {
-                      if (!this._isExcludedField(name)) {
-                        let entry: EntryModel | undefined = results.find(
-                          (result: any) => {
-                            return result.name === name;
-                          }
-                        );
+              let value = row[4];
+              if (typeof value !== 'string') {
+                return;
+              }
+              value = parseInt(value.replace(',', ''));
 
-                        if (!entry) {
-                          entry = {
-                            name: name,
-                            query: query,
-                            count: 0,
-                            total: 0,
-                            value: 0,
-                            data: [],
-                            uniqueIDs: []
-                          };
+              let names = DataService._getNames(settings.type, query);
 
-                          results.push(entry);
-                        }
-
-                        entry.count++;
-                        entry.total += value;
-                        entry.value = entry.total / entry.count;
-
-                        entry.data.push(file);
-
-                        const uniqueIDs: string[] = DataService.getUniqueCallID(query);
-                        if (uniqueIDs.length !== 0) {
-                          entry.uniqueIDs.push(uniqueIDs[0]);
-                        }
-                      }
+              if (names.length !== 0) {
+                names.forEach(
+                  (name: string) => {
+                    if (this._isExcludedField(name)) {
+                      return;
                     }
-                  );
-                }
+
+                    let entry: EntryModel | undefined = results.find(
+                      (result: any) => {
+                        return result.name === name;
+                      }
+                    );
+
+                    if (!entry) {
+                      entry = {
+                        name: name,
+                        query: query,
+                        count: 0,
+                        total: 0,
+                        value: 0,
+                        data: [],
+                        uniqueIDs: []
+                      };
+
+                      results.push(entry);
+                    }
+
+                    entry.count++;
+                    entry.total += value;
+                    entry.value = entry.total / entry.count;
+
+                    entry.data.push(file);
+
+                    const uniqueIDs: string[] = DataService.getUniqueCallID(query);
+                    if (uniqueIDs.length !== 0) {
+                      entry.uniqueIDs.push(uniqueIDs[0]);
+                    }
+                  }
+                );
               }
             }
           );

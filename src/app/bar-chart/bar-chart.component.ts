@@ -9,19 +9,26 @@ import {EntryModel} from "../entry.model";
   styleUrls: ['./bar-chart.component.scss']
 })
 export class BarChartComponent {
-  chartHeight = 1000;
-  chartWidth = 1500;
-  displayValues: any[] = [];
-  uniqueValues: any[] = [];
-  isLoading: boolean = true;
-  results: EntryModel[] = [];
-  type: string = 'fields';
-  xAxisLabel = 'Fields';
-  yAxisLabel = 'Avg (MS)';
+  public chartHeight = 1000;
+  public chartWidth = 1500;
+  public displayValues: any[] = [];
+  public uniqueValues: any[] = [];
+  public isLoading: boolean = true;
+  public results: EntryModel[] = [];
+  public data: string = 'soliantInvoice';
+  public type: string = 'fields';
+  public xAxisLabel = 'Fields';
+  public yAxisLabel = 'Avg (MS)';
 
   constructor(
-    private data: DataService
+    private dataService: DataService
   ) {
+    this.loadData();
+  }
+
+  changeData(data: string): void {
+    this.data = data;
+
     this.loadData();
   }
 
@@ -34,7 +41,12 @@ export class BarChartComponent {
   loadData(): void {
     this.isLoading = true;
 
-    this.data.get(this.type).pipe(
+    this.dataService.get(
+      {
+        data: this.data,
+        type: this.type
+      }
+    ).pipe(
       finalize(
         () => {
           this.isLoading = false;
