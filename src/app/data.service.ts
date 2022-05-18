@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {NgxCsvParser} from 'ngx-csv-parser';
-import {Observable} from 'rxjs';
+import {forkJoin, Observable} from 'rxjs';
 import {EntryModel} from "./entry.model";
 import {DataServiceSettingsModel} from "./data-service-settings.model";
 
@@ -22,83 +22,65 @@ export class DataService {
   }
 
   public get(settings: DataServiceSettingsModel): Observable<EntryModel[]> {
-    let results: EntryModel[] = [];
+    const observables: Observable<EntryModel[]>[] = [];
 
-    return this.http.get(
-      'assets/' + settings.data + '.csv',
-      {
-        responseType: 'text'
+    settings.types.forEach(
+      (type) => {
+        const observable: Observable<EntryModel[]> = this.http.get(
+          'assets/' + settings.data + '.csv',
+          {
+            responseType: 'text'
+          }
+        ).pipe(
+          map(
+            (results) => {
+              return this._parseCsv(results, type)
+            }
+          )
+        );
+
+        observables.push(observable);
       }
-    ).pipe(
+    );
+
+    return forkJoin(observables).pipe(
       map(
-        (file) => {
-          const csv = this.ngxCsvParser.csvStringToArray(file, ',');
-          csv.forEach(
-            (row, index) => {
-              if (index === 0) {
-                return;
-              } else if (row.length !== 5) {
-                return;
-              }
+        (allResults: EntryModel[][]) => {
+          while (allResults.length !== 1) {
+            const lastResult = allResults.pop();
+            if (!lastResult) {
+              throw "You done mess up A-A-Ron!";
+            }
 
-              let query = row[3];
-              try {
-                query = decodeURIComponent(query);
-              } catch (_) {
-                return;
-              }
-
-              let value = row[4];
-              if (typeof value !== 'string') {
-                return;
-              }
-              value = parseInt(value.replace(',', ''));
-
-              let names = DataService._getNames(settings.type, query);
-
-              if (names.length !== 0) {
-                names.forEach(
-                  (name: string) => {
-                    if (this._isExcludedField(name)) {
-                      return;
-                    }
-
-                    let entry: EntryModel | undefined = results.find(
-                      (result: any) => {
-                        return result.name === name;
-                      }
-                    );
-
-                    if (!entry) {
-                      entry = {
-                        name: name,
-                        query: query,
-                        count: 0,
-                        total: 0,
-                        value: 0,
-                        data: [],
-                        uniqueIDs: []
-                      };
-
-                      results.push(entry);
-                    }
-
-                    entry.count++;
-                    entry.total += value;
-                    entry.value = entry.total / entry.count;
-
-                    entry.data.push(file);
-
-                    const uniqueIDs: string[] = DataService.getUniqueCallID(query);
-                    if (uniqueIDs.length !== 0) {
-                      entry.uniqueIDs.push(uniqueIDs[0]);
-                    }
+            lastResult.forEach(
+              (fromLast) => {
+                const fromFirst = allResults[0].find(
+                  (fromFirstCandidate) => {
+                    return fromFirstCandidate.name === fromLast.name;
                   }
                 );
-              }
-            }
-          );
 
+                if (!fromFirst) {
+                  allResults[0].push(fromLast);
+
+                  return;
+                }
+
+                fromFirst.count += fromLast.count;
+                fromFirst.total += fromLast.total;
+                fromFirst.value = fromFirst.total / fromFirst.count;
+                fromFirst.data = Array.from(new Set(fromFirst.data.concat(fromLast.data)));
+                fromFirst.uniqueIDs = Array.from(new Set(fromFirst.uniqueIDs.concat(fromLast.uniqueIDs)));
+              }
+            );
+          }
+
+          return allResults[0];
+        }
+      )
+    ).pipe(
+      map(
+        (results) => {
           results = results.sort(
             (a: any, b: any) => {
               if (a.value == b.value) {
@@ -110,8 +92,6 @@ export class DataService {
           );
 
           results = results.slice(0, 30);
-
-          console.log(results);
 
           return results;
         }
@@ -214,5 +194,78 @@ export class DataService {
         return blacklistedField.toLowerCase() === field.toLowerCase();
       }
     );
+  }
+
+  private _parseCsv(csvString: string, type: string): EntryModel[] {
+    let results: EntryModel[] = [];
+
+    const csv = this.ngxCsvParser.csvStringToArray(csvString, ',');
+    csv.forEach(
+      (row, index) => {
+        if (index === 0) {
+          return;
+        } else if (row.length !== 5) {
+          return;
+        }
+
+        let query = row[3];
+        try {
+          query = decodeURIComponent(query);
+        } catch (_) {
+          return;
+        }
+
+        let value = row[4];
+        if (typeof value !== 'string') {
+          return;
+        }
+        value = parseInt(value.replace(',', ''));
+
+        let names = DataService._getNames(type, query);
+
+        if (names.length !== 0) {
+          names.forEach(
+            (name: string) => {
+              if (this._isExcludedField(name)) {
+                return;
+              }
+
+              let entry: EntryModel | undefined = results.find(
+                (result: any) => {
+                  return result.name === name;
+                }
+              );
+
+              if (!entry) {
+                entry = {
+                  name: name,
+                  query: query,
+                  count: 0,
+                  total: 0,
+                  value: 0,
+                  data: [],
+                  uniqueIDs: []
+                };
+
+                results.push(entry);
+              }
+
+              entry.count++;
+              entry.total += value;
+              entry.value = entry.total / entry.count;
+
+              entry.data.push(JSON.stringify(row));
+
+              const uniqueIDs: string[] = DataService.getUniqueCallID(query);
+              if (uniqueIDs.length !== 0) {
+                entry.uniqueIDs.push(uniqueIDs[0]);
+              }
+            }
+          );
+        }
+      }
+    );
+
+    return results;
   }
 }

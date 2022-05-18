@@ -16,7 +16,7 @@ export class BarChartComponent {
   public isLoading: boolean = true;
   public results: EntryModel[] = [];
   public data: string = 'soliantInvoice';
-  public type: string = 'fields';
+  public types: string[] = ['fields'];
   public xAxisLabel = 'Fields';
   public yAxisLabel = 'Avg (MS)';
 
@@ -32,8 +32,25 @@ export class BarChartComponent {
     this.loadData();
   }
 
-  changeType(type: string): void {
-    this.type = type;
+  hasType(type:string):boolean {
+    return this.types.some(
+      (candidate:string) => {
+        return candidate === type;
+      }
+    );
+  }
+
+  toggleType(type: string): void {
+    const hasType = this.hasType(type);
+    if (hasType) {
+      this.types = this.types.filter(
+        (candidate:string) => {
+          return candidate === type;
+        }
+      );
+    } else {
+      this.types.push(type);
+    }
 
     this.loadData();
   }
@@ -44,7 +61,7 @@ export class BarChartComponent {
     this.dataService.get(
       {
         data: this.data,
-        type: this.type
+        types: this.types
       }
     ).pipe(
       finalize(

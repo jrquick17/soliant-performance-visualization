@@ -25,7 +25,6 @@
 * [Link to Soliant's Payable Charge Logs](http://laselk.bullhorn.com/app/discover#/view/88bae400-d6ef-11ec-bafa-d9416a9da518?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:'2022-01-01T06:00:00.000Z',to:now))&_a=(columns:!(corp,path,query,msec),filters:!(('$state':(store:appState),meta:(alias:!n,disabled:!f,index:rest-access,key:corp,negate:!f,params:(query:13408),type:phrase),query:(match_phrase:(corp:13408)))),index:rest-access,interval:auto,query:(language:kuery,query:'path:%20%22*query%2FPayableCharge*%22%20AND%20corp%20%3D%2013408%20'),sort:!()))
 
 ## To Do ##
-* Add checkboxes instead of buttons so that multiple params can be combined
 * Add ability to limit results via date range
 * Allow clicking unique ids to see the full log
 * Create enums for fields and data types

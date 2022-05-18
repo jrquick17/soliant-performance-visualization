@@ -10,17 +10,38 @@
   <button type="button" (click)="changeData('allPC')">All PCs</button>
 </div>
 
-<button type="button" (click)="changeType('fields')">Fields</button>
-<button type="button" (click)="changeType('where')">Where</button>
-<button type="button" (click)="changeType('groupBy')">Group By</button>
-<button type="button" (click)="changeType('orderBy')">Order By</button>
-<button type="button" (click)="changeType('count')">Count</button>
-<button type="button" (click)="changeType('showTotalMatched')">Show Total</button>
+<div>
+  <label>
+    Fields
+    <input type="checkbox" [value]="'fields'" [checked]="hasType('fields')" (click)="toggleType('fields')"/>
+  </label>
+  <label>
+    Where
+    <input type="checkbox" [value]="'where'" [checked]="hasType('where')" (click)="toggleType('where')"/>
+  </label>
+  <label>
+    Group By
+    <input type="checkbox" [value]="'groupBy'" [checked]="hasType('groupBy')" (click)="toggleType('groupBy')"/>
+  </label>
+  <label>
+    Order By
+    <input type="checkbox" [value]="'orderBy'" [checked]="hasType('orderBy')" (click)="toggleType('orderBy')"/>
+  </label>
+  <label>
+    Count
+    <input type="checkbox" [value]="'count'" [checked]="hasType('count')" (click)="toggleType('count')"/>
+  </label>
+  <label>
+    Show Total
+    <input type="checkbox" [value]="'showTotalMatched'" [checked]="hasType('showTotalMatched')"
+           (click)="toggleType('showTotalMatched')"/>
+  </label>
+</div>
 
 <p *ngIf="isLoading">Loading...</p>
 
 <div *ngIf="!isLoading">
-  Currently Viewing: {{ type }}
+  Currently Viewing: {{ types }}
 </div>
 
 <div *ngIf="!isLoading">
