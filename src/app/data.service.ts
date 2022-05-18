@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
-import {finalize, map, tap} from "rxjs/operators";
-import {HttpClient} from "@angular/common/http";
-import {NgxCsvParser} from "ngx-csv-parser";
-import {Observable} from "rxjs";
+import {map} from 'rxjs/operators';
+import {HttpClient} from '@angular/common/http';
+import {NgxCsvParser} from 'ngx-csv-parser';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
+  private excludedFields = [
+    'count(id)'
+  ];
+
   constructor(
     private http:HttpClient,
     private ngxCsvParser: NgxCsvParser
@@ -29,7 +33,7 @@ export class DataService {
 
       fields = fields.replace('-', '')
         .replace('+', '')
-        .replace('"', '');
+        .replace('\'', '');
 
       results = results.concat(fields.split(split));
     }
@@ -76,6 +80,14 @@ export class DataService {
     return this.getParamValues('count=', query);
   }
 
+  private isExcludedField(field:string):boolean {
+    return this.excludedFields.some(
+      (blacklistedField) => {
+        return blacklistedField.toLowerCase() === field.toLowerCase();
+      }
+    );
+  }
+
   public get(type:string):Observable<any[]> {
     let results:any[] = [];
 
@@ -87,7 +99,7 @@ export class DataService {
     ).pipe(
       map(
         (file) => {
-          const csv = this.ngxCsvParser.csvStringToArray(file, ",");
+          const csv = this.ngxCsvParser.csvStringToArray(file, ',');
           csv.forEach(
             (row, index) => {
               row[3] = decodeURIComponent(row[3]);
@@ -120,35 +132,37 @@ export class DataService {
                 if (names.length !== 0) {
                   names.forEach(
                     (name) => {
-                      let entry = results.find(
-                        (result: any) => {
-                          return result.name === name;
+                      if (!this.isExcludedField(name)) {
+                        let entry = results.find(
+                          (result: any) => {
+                            return result.name === name;
+                          }
+                        );
+
+                        if (!entry) {
+                          entry = {
+                            name: name,
+                            query: row[3],
+                            count: 0,
+                            total: 0,
+                            value: 0,
+                            data: [],
+                            uniqueIDs: []
+                          };
+
+                          results.push(entry);
                         }
-                      );
 
-                      if (!entry) {
-                        entry = {
-                          name: name,
-                          query: row[3],
-                          count: 0,
-                          total: 0,
-                          value: 0,
-                          data: [],
-                          uniqueIDs: []
-                        };
+                        entry.count++;
+                        entry.total += value;
+                        entry.value = entry.total / entry.count;
 
-                        results.push(entry);
-                      }
+                        entry.data.push(file);
 
-                      entry.count++;
-                      entry.total += value;
-                      entry.value = entry.total / entry.count;
-
-                      entry.data.push(file);
-
-                      const uniqueIDs:string[] = this.getUniqueCallID(row[3]);
-                      if (uniqueIDs.length !== 0) {
-                        entry.uniqueIDs.push(uniqueIDs[0]);
+                        const uniqueIDs: string[] = this.getUniqueCallID(row[3]);
+                        if (uniqueIDs.length !== 0) {
+                          entry.uniqueIDs.push(uniqueIDs[0]);
+                        }
                       }
                     }
                   );
