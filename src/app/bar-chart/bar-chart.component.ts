@@ -1,6 +1,7 @@
 import {Component} from '@angular/core';
 import {finalize} from "rxjs/operators";
 import {DataService} from "../data.service";
+import {EntryModel} from "../entry.model";
 
 @Component({
   selector: 'app-bar-chart',
@@ -13,24 +14,24 @@ export class BarChartComponent {
   displayValues: any[] = [];
   uniqueValues: any[] = [];
   isLoading: boolean = true;
-  results: any = [];
-  type:string = 'fields';
+  results: EntryModel[] = [];
+  type: string = 'fields';
   xAxisLabel = 'Fields';
   yAxisLabel = 'Avg (MS)';
 
   constructor(
-    private data:DataService
+    private data: DataService
   ) {
     this.loadData();
   }
 
-  changeType(type:string) {
+  changeType(type: string): void {
     this.type = type;
 
     this.loadData();
   }
 
-  loadData() {
+  loadData(): void {
     this.isLoading = true;
 
     this.data.get(this.type).pipe(
@@ -46,14 +47,16 @@ export class BarChartComponent {
     );
   }
 
-  onSelect(event: any) {
+  onSelect(event: { name: string }): void {
     let entry = this.results.find(
-      (result: any) => {
+      (result) => {
         return result.name === event.name;
       }
     );
 
-    this.displayValues = entry.data;
-    this.uniqueValues = entry.uniqueIDs;
+    if (entry) {
+      this.displayValues = entry.data;
+      this.uniqueValues = entry.uniqueIDs;
+    }
   }
 }

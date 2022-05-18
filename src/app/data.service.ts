@@ -1,26 +1,27 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {NgxCsvParser} from 'ngx-csv-parser';
 import {Observable} from 'rxjs';
+import {EntryModel} from "./entry.model";
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
-  private excludedFields:string[] = [
+  private excludedFields: string[] = [
     'count(id)'
   ];
 
   constructor(
-    private http:HttpClient,
-    private ngxCsvParser:NgxCsvParser
+    private http: HttpClient,
+    private ngxCsvParser: NgxCsvParser
   ) {
 
   }
 
-  public get(type:string):Observable<any[]> {
-    let results:any[] = [];
+  public get(type: string): Observable<EntryModel[]> {
+    let results: EntryModel[] = [];
 
     return this.http.get(
       'assets/dataAll.csv',
@@ -41,9 +42,9 @@ export class DataService {
 
                 if (names.length !== 0) {
                   names.forEach(
-                    (name:string) => {
+                    (name: string) => {
                       if (!this._isExcludedField(name)) {
-                        let entry = results.find(
+                        let entry: EntryModel | undefined = results.find(
                           (result: any) => {
                             return result.name === name;
                           }
@@ -82,7 +83,7 @@ export class DataService {
           );
 
           results = results.sort(
-            (a:any, b:any) => {
+            (a: any, b: any) => {
               if (a.value == b.value) {
                 return 0;
               }
@@ -101,20 +102,20 @@ export class DataService {
     );
   }
 
-  private static getCountName(query:string) {
+  private static getCountName(query: string): string[] {
     return DataService._getParamValues('count=', query);
   }
 
-  private static _getFieldNames(query:string) {
+  private static _getFieldNames(query: string): string[] {
     return DataService._getParamValues('fields=', query);
   }
 
-  private static getGroupByName(query:string) {
+  private static getGroupByName(query: string): string[] {
     return DataService._getParamValues('groupBy=', query);
   }
 
-  private static _getNames(type: string, query: string):string[] {
-    let names:string[] = [];
+  private static _getNames(type: string, query: string): string[] {
+    let names: string[] = [];
     switch (type) {
       case 'count':
         names = DataService.getCountName(query);
@@ -139,12 +140,12 @@ export class DataService {
     return names;
   }
 
-  private static getOrderByName(query:string) {
+  private static getOrderByName(query: string): string[] {
     return DataService._getParamValues('orderBy=', query);
   }
 
-  private static _getParamValues(key:string, query:string, split:string = ',') {
-    let results:any[] = [];
+  private static _getParamValues(key: string, query: string, split: string = ','): string[] {
+    let results: any[] = [];
 
     const startingIndex = query.indexOf(key);
     if (startingIndex >= 0) {
@@ -165,16 +166,16 @@ export class DataService {
     return results;
   }
 
-  private static getShowName(query:string) {
+  private static getShowName(query: string): string[] {
     return DataService._getParamValues('showTotalMatched=', query);
   }
 
-  private static getUniqueCallID(query:string) {
+  private static getUniqueCallID(query: string): string[] {
     return DataService._getParamValues('uniqueCallId=', query);
   }
 
-  private static _getWhereNames(query:string) {
-    const results:any[] = DataService._getParamValues('where=', query, ' AND ');
+  private static _getWhereNames(query: string): string[] {
+    const results: any[] = DataService._getParamValues('where=', query, ' AND ');
 
     results.forEach(
       (result) => {
@@ -190,7 +191,7 @@ export class DataService {
     return results;
   }
 
-  private _isExcludedField(field:string):boolean {
+  private _isExcludedField(field: string): boolean {
     return this.excludedFields.some(
       (blacklistedField) => {
         return blacklistedField.toLowerCase() === field.toLowerCase();
