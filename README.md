@@ -2,6 +2,11 @@
 
 # Development #
 
+## Run Locally ##
+* Run `npm install`
+* Run `npm run start`
+* Have fun!
+
 ## Gather Results
 * Open relevant link below
 * Alter time range and/or set additional filters
