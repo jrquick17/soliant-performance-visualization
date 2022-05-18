@@ -15,147 +15,65 @@ export class DataService {
 
   }
 
-  private getFieldNames(query:string) {
+  private getParamValues(key:string, query:string, split:string = ',') {
     let results:any[] = [];
 
-    const startingIndex = query.indexOf('fields=');
+    const startingIndex = query.indexOf(key);
     if (startingIndex >= 0) {
-      let fields = query.slice(startingIndex + 7);
+      let fields = query.slice(startingIndex + key.length);
 
       const lastIndex = fields.indexOf('&');
       if (lastIndex >= 0) {
         fields = fields.slice(0, lastIndex);
       }
 
-      results = results.concat(fields.split(','));
+      fields = fields.replace('-', '')
+        .replace('+', '')
+        .replace('"', '');
+
+      results = results.concat(fields.split(split));
     }
 
     return results;
   }
 
+  private getFieldNames(query:string) {
+    return this.getParamValues('fields=', query);
+  }
+
   private getWhereNames(query:string) {
-    let results:any[] = [];
+    const results:any[] = this.getParamValues('where=', query, ' AND ');
 
-    const startingIndex = query.indexOf('where=');
-    if (startingIndex >= 0) {
-      let fields = query.slice(startingIndex + 6);
-
-      const lastIndex = fields.indexOf('&');
-      if (lastIndex >= 0) {
-        fields = fields.slice(0, lastIndex);
+    results.forEach(
+      (result) => {
+        result = result.splice(result.indexOf('<'));
+        result = result.splice(result.indexOf('>'));
+        result = result.splice(result.indexOf('!'));
+        result = result.splice(result.indexOf('='));
       }
-
-      results = results.concat(fields.split(' AND '));
-
-      results.forEach(
-        (result) => {
-          result = result.splice(result.indexOf('<'));
-          result = result.splice(result.indexOf('>'));
-          result = result.splice(result.indexOf('!'));
-          result = result.splice(result.indexOf('='));
-        }
-      )
-    }
+    );
 
     return results;
   }
 
   private getShowName(query:string) {
-    let results = [];
-
-    const startingIndex = query.indexOf('showTotalMatched=');
-    if (startingIndex >= 0) {
-      let orderBy = query.slice(startingIndex + 17);
-
-      const lastIndex = orderBy.indexOf('&');
-      if (lastIndex >= 0) {
-        orderBy = orderBy.slice(0, lastIndex);
-      }
-
-      orderBy =  orderBy.replace('-', '').replace('+', '');
-
-      results.push(orderBy);
-    }
-
-    return results;
+    return this.getParamValues('showTotalMatched=', query);
   }
 
   private getOrderByName(query:string) {
-    let results = [];
-
-    const startingIndex = query.indexOf('orderBy=');
-    if (startingIndex >= 0) {
-      let orderBy = query.slice(startingIndex + 8);
-
-      const lastIndex = orderBy.indexOf('&');
-      if (lastIndex >= 0) {
-        orderBy = orderBy.slice(0, lastIndex);
-      }
-
-      orderBy =  orderBy.replace('-', '').replace('+', '');
-
-      results.push(orderBy);
-    }
-
-    return results;
+    return this.getParamValues('orderBy=', query);
   }
 
   private getGroupByName(query:string) {
-    let results = [];
-
-    const startingIndex = query.indexOf('groupBy=');
-    if (startingIndex >= 0) {
-      let orderBy = query.slice(startingIndex + 8);
-
-      const lastIndex = orderBy.indexOf('&');
-      if (lastIndex >= 0) {
-        orderBy = orderBy.slice(0, lastIndex);
-      }
-
-      results.push(orderBy);
-    }
-
-    return results;
+    return this.getParamValues('groupBy=', query);
   }
 
   private getUniqueCallID(query:string) {
-    let result = null;
-
-    const startingIndex = query.indexOf('uniqueCallId=');
-    if (startingIndex >= 0) {
-      let orderBy = query.slice(startingIndex + 13);
-
-      const lastIndex = orderBy.indexOf('&');
-      if (lastIndex >= 0) {
-        orderBy = orderBy.slice(0, lastIndex);
-      }
-
-      orderBy =  orderBy.replace('"', '');
-
-      result = orderBy;
-    }
-
-    return result;
+    return this.getParamValues('uniqueCallId=', query);
   }
 
   private getCountName(query:string) {
-    let results = [];
-
-    const startingIndex = query.indexOf('count=');
-    if (startingIndex >= 0) {
-      let orderBy = query.slice(startingIndex + 6);
-
-      const lastIndex = orderBy.indexOf('&');
-      if (lastIndex >= 0) {
-        orderBy = orderBy.slice(0, lastIndex);
-      }
-
-      orderBy =  orderBy.replace('-', '').replace('+', '');
-
-      results.push(orderBy);
-    }
-
-    return results;
+    return this.getParamValues('count=', query);
   }
 
   public get(type:string):Observable<any[]> {
@@ -227,7 +145,11 @@ export class DataService {
                       entry.value = entry.total / entry.count;
 
                       entry.data.push(file);
-                      entry.uniqueIDs.push(this.getUniqueCallID(row[3]));
+
+                      const uniqueIDs:string[] = this.getUniqueCallID(row[3]);
+                      if (uniqueIDs.length !== 0) {
+                        entry.uniqueIDs.push(uniqueIDs[0]);
+                      }
                     }
                   );
                 }
