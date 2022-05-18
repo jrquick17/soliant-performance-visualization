@@ -24,3 +24,4 @@
 * Add ability to limit results via date range
 * Allow clicking unique ids to see the full log
 * Create enums for fields and data types
+* Combine unique calls into single msec and take average
