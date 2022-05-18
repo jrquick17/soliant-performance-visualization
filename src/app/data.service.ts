@@ -100,6 +100,24 @@ export class DataService {
     return results;
   }
 
+  private getGroupByName(query:string) {
+    let results = [];
+
+    const startingIndex = query.indexOf('groupBy=');
+    if (startingIndex >= 0) {
+      let orderBy = query.slice(startingIndex + 8);
+
+      const lastIndex = orderBy.indexOf('&');
+      if (lastIndex >= 0) {
+        orderBy = orderBy.slice(0, lastIndex);
+      }
+
+      results.push(orderBy);
+    }
+
+    return results;
+  }
+
   private getUniqueCallID(query:string) {
     let result = null;
 
@@ -164,6 +182,9 @@ export class DataService {
                     break;
                   case 'fields':
                     names = this.getFieldNames(row[3]);
+                    break;
+                  case 'groupBy':
+                    names = this.getGroupByName(row[3]);
                     break;
                   case 'orderBy':
                     names = this.getOrderByName(row[3]);
