@@ -11,6 +11,11 @@
 </div>
 
 <div>
+  <button type="button" (click)="changeDisplay('graph')">Graph</button>
+  <button type="button" (click)="changeDisplay('table')">Table</button>
+</div>
+
+<div>
   <label>
     Fields
     <input type="checkbox" [value]="'fields'" [checked]="hasType('fields')" (click)="toggleType('fields')"/>
@@ -45,7 +50,8 @@
 </div>
 
 <div *ngIf="!isLoading">
-  <ngx-charts-bar-vertical [view]="[ chartWidth, chartHeight ]"
+  <ngx-charts-bar-vertical *ngIf="display === 'graph'"
+                           [view]="[ chartWidth, chartHeight ]"
                            [results]="results"
                            [gradient]="false"
                            [xAxis]="true"
@@ -56,6 +62,17 @@
                            [xAxisLabel]="xAxisLabel"
                            [yAxisLabel]="yAxisLabel"
                            (select)="onSelect($event)"></ngx-charts-bar-vertical>
+
+  <div *ngIf="display === 'table'">
+    <table>
+      <tbody>
+        <tr *ngFor="let result of results">
+          <td>{{ result.name }}</td>
+          <td>{{ result.value }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
   <div *ngIf="uniqueValues.length !== 0">
     <p style="font-weight: bold; font-size: large;">UNIQUE CALL IDS</p>

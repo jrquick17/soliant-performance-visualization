@@ -27,7 +27,6 @@
 ## To Do ##
 * Add button to submit changes
 * Add button to clear data
-* Add ability to toggle between a graph and table data
 * Add ability to drill down on a specific field
 * Load correct data and filters based on #route
 * Add ability to limit results via date range

@@ -11,6 +11,7 @@ import {EntryModel} from "../entry.model";
 export class BarChartComponent {
   public chartHeight = 1000;
   public chartWidth = 1500;
+  public display: string = 'graph';
   public displayValues: any[] = [];
   public uniqueValues: any[] = [];
   public isLoading: boolean = true;
@@ -30,6 +31,10 @@ export class BarChartComponent {
     this.data = data;
 
     this.loadData();
+  }
+
+  changeDisplay(display:string): void {
+    this.display = display;
   }
 
   hasType(type:string):boolean {
