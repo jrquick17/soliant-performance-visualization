@@ -72,6 +72,9 @@ export class BarChartComponent {
     ).subscribe(
       (results) => {
         this.results = results;
+
+        this.displayValues = [];
+        this.uniqueValues = [];
       }
     );
   }
