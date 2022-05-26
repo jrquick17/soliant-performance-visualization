@@ -3,8 +3,8 @@ import {map} from 'rxjs/operators';
 import {HttpClient} from '@angular/common/http';
 import {NgxCsvParser} from 'ngx-csv-parser';
 import {forkJoin, Observable} from 'rxjs';
-import {EntryModel} from "./entry.model";
-import {DataServiceSettingsModel} from "./data-service-settings.model";
+import {EntryModel} from './entry.model';
+import {DataServiceSettingsModel} from './data-service-settings.model';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +27,7 @@ export class DataService {
     settings.types.forEach(
       (type) => {
         const observable: Observable<EntryModel[]> = this.http.get(
-          'assets/' + settings.data + '.csv',
+          'assets/logs/' + settings.data + '.csv',
           {
             responseType: 'text'
           }
@@ -49,7 +49,7 @@ export class DataService {
           while (allResults.length !== 1) {
             const lastResult = allResults.pop();
             if (!lastResult) {
-              throw "You done mess up A-A-Ron!";
+              throw 'You done mess up A-A-Ron!';
             }
 
             lastResult.forEach(

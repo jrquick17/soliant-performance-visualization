@@ -17,7 +17,7 @@ export class BarChartComponent {
   public isLoading: boolean = true;
   public results: EntryModel[] = [];
   public data: string = 'soliantInvoice';
-  public types: string[] = ['fields'];
+  public types: string[] = ['orderBy'];
   public xAxisLabel = 'Fields';
   public yAxisLabel = 'Avg (MS)';
 
