@@ -181,7 +181,6 @@ export class DataService {
       (result) => {
         result = result.split(' ')[0];
         result = result.split(':')[0];
-        result = result.split('.')[0];
         result = result.split('<')[0];
         result = result.split('>')[0];
         result = result.split('!')[0];
