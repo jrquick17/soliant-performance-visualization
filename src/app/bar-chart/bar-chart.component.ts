@@ -33,13 +33,13 @@ export class BarChartComponent {
     this.loadData();
   }
 
-  changeDisplay(display:string): void {
+  changeDisplay(display: string): void {
     this.display = display;
   }
 
-  hasType(type:string):boolean {
+  hasType(type: string): boolean {
     return this.types.some(
-      (candidate:string) => {
+      (candidate: string) => {
         return candidate === type;
       }
     );
@@ -49,7 +49,7 @@ export class BarChartComponent {
     const hasType = this.hasType(type);
     if (hasType) {
       this.types = this.types.filter(
-        (candidate:string) => {
+        (candidate: string) => {
           return candidate === type;
         }
       );

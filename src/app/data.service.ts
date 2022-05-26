@@ -155,6 +155,9 @@ export class DataService {
 
       fields = fields.replace('-', '')
         .replace('+', '')
+        .replace(')', '')
+        .replace('(', '')
+        .replace(',', '')
         .replace('\'', '');
 
       results = results.concat(fields.split(split));
@@ -172,14 +175,17 @@ export class DataService {
   }
 
   private static _getWhereNames(query: string): string[] {
-    const results: any[] = DataService._getParamValues('where=', query, ' AND ');
+    let results: any[] = DataService._getParamValues('where=', query, ' AND ');
 
-    results.forEach(
+    results = results.map(
       (result) => {
-        result = result.splice(result.indexOf('<'));
-        result = result.splice(result.indexOf('>'));
-        result = result.splice(result.indexOf('!'));
-        result = result.splice(result.indexOf('='));
+        result = result.split(' ')[0];
+        result = result.split(':')[0];
+        result = result.split('.')[0];
+        result = result.split('<')[0];
+        result = result.split('>')[0];
+        result = result.split('!')[0];
+        result = result.split('=')[0];
 
         return result;
       }
