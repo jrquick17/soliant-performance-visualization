@@ -1,12 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import {BarChartComponent} from "./bar-chart/bar-chart.component";
+import {ChartsComponent} from './charts/charts.component';
 
 const routes: Routes = [
   {
-    path: "bar-chart",
-    component: BarChartComponent
-  }
+    path: 'charts',
+    component: ChartsComponent
+  },
+  { path: '**',
+    redirectTo: '/charts',
+    pathMatch: 'full'
+  },
 ];
 
 @NgModule({

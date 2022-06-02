@@ -1,0 +1,65 @@
+<div>
+  <button type="button" (click)="changeData('soliantInvoice')">Soliant Invoices</button>
+  <button type="button" (click)="changeData('soliantBC')">Soliant BC</button>
+  <button type="button" (click)="changeData('soliantPC')">Soliant PC</button>
+</div>
+
+<div>
+  <button type="button" (click)="changeData('allInvoice')">All Invoices</button>
+  <button type="button" (click)="changeData('allBC')">All BCs</button>
+  <button type="button" (click)="changeData('allPC')">All PCs</button>
+</div>
+
+<div>
+  <button type="button" (click)="changeDisplay('graph')">Graph</button>
+  <button type="button" (click)="changeDisplay('table')">Table</button>
+</div>
+
+<div>
+  <label>
+    Fields
+    <input type="checkbox" [value]="'fields'" [checked]="hasType('fields')" (click)="toggleType('fields')"/>
+  </label>
+  <label>
+    Where
+    <input type="checkbox" [value]="'where'" [checked]="hasType('where')" (click)="toggleType('where')"/>
+  </label>
+  <label>
+    Group By
+    <input type="checkbox" [value]="'groupBy'" [checked]="hasType('groupBy')" (click)="toggleType('groupBy')"/>
+  </label>
+  <label>
+    Order By
+    <input type="checkbox" [value]="'orderBy'" [checked]="hasType('orderBy')" (click)="toggleType('orderBy')"/>
+  </label>
+  <label>
+    Count
+    <input type="checkbox" [value]="'count'" [checked]="hasType('count')" (click)="toggleType('count')"/>
+  </label>
+  <label>
+    Show Total
+    <input type="checkbox" [value]="'showTotalMatched'" [checked]="hasType('showTotalMatched')"
+           (click)="toggleType('showTotalMatched')"/>
+  </label>
+</div>
+
+<div>
+  <input type="button"
+         (click)="loadData()"
+         value="Run"/>
+  <input type="button"
+         (click)="reset()"
+         value="Reset"/>
+</div>
+
+<p *ngIf="isLoading">Loading...</p>
+
+<div *ngIf="!isLoading">
+  Currently Viewing: {{ data }} ({{ types }})
+</div>
+
+<div *ngIf="!isLoading">
+  <app-bar-chart [displayValues]="displayValues"
+                 [results]="results"
+                 [uniqueValues]="uniqueValues"></app-bar-chart>
+</div>
