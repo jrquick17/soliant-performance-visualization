@@ -3,7 +3,7 @@ import {BrowserModule} from '@angular/platform-browser';
 
 import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
-import {BarChartComponent} from './bar-chart/bar-chart.component';
+import {FieldPerformanceComponent} from './field-performance/field-performance.component';
 import {BarChartModule, NgxChartsModule} from '@swimlane/ngx-charts';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {HttpClientModule} from '@angular/common/http';
@@ -14,7 +14,7 @@ import {ChartsComponent} from './charts/charts.component';
 @NgModule({
   declarations: [
     AppComponent,
-    BarChartComponent,
+    FieldPerformanceComponent,
     ChartsComponent
   ],
   imports: [

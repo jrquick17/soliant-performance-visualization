@@ -2,11 +2,11 @@ import {Component, Input} from '@angular/core';
 import {EntryModel} from '../entry.model';
 
 @Component({
-  selector: 'app-bar-chart',
-  templateUrl: './bar-chart.component.html',
-  styleUrls: ['./bar-chart.component.scss']
+  selector: 'app-field-performance',
+  templateUrl: './field-performance.component.html',
+  styleUrls: ['./field-performance.component.scss']
 })
-export class BarChartComponent {
+export class FieldPerformanceComponent {
   @Input() public chartHeight = 1000;
   @Input() public chartWidth = 1500;
   @Input() public xAxisLabel = 'Fields';
