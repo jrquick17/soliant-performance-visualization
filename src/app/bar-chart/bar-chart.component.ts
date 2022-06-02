@@ -29,8 +29,6 @@ export class BarChartComponent {
 
   changeData(data: string): void {
     this.data = data;
-
-    this.loadData();
   }
 
   changeDisplay(display: string): void {
@@ -56,8 +54,6 @@ export class BarChartComponent {
     } else {
       this.types.push(type);
     }
-
-    this.loadData();
   }
 
   loadData(): void {

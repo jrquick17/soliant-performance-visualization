@@ -43,6 +43,12 @@
   </label>
 </div>
 
+<div>
+  <input type="button"
+         (click)="loadData()"
+         value="Run"/>
+</div>
+
 <p *ngIf="isLoading">Loading...</p>
 
 <div *ngIf="!isLoading">
@@ -66,10 +72,10 @@
   <div *ngIf="display === 'table'">
     <table>
       <tbody>
-        <tr *ngFor="let result of results">
-          <td>{{ result.name }}</td>
-          <td>{{ result.value }}</td>
-        </tr>
+      <tr *ngFor="let result of results">
+        <td>{{ result.name }}</td>
+        <td>{{ result.value }}</td>
+      </tr>
       </tbody>
     </table>
   </div>
