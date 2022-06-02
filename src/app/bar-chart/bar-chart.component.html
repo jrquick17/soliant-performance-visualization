@@ -1,5 +1,6 @@
 <ngx-charts-bar-vertical *ngIf="display === 'graph'"
-                         [view]="[ chartWidth, chartHeight ]"
+                         (window:resize)="onResize($event)"
+                         [view]="view"
                          [results]="results"
                          [gradient]="false"
                          [xAxis]="true"

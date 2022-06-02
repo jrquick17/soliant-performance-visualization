@@ -17,9 +17,14 @@ export class BarChartComponent {
   @Input() public uniqueValues: string[] = [];
 
   public display = 'graph';
+  public view:[number,number] = [innerWidth, innerHeight - 250];
 
   constructor() {
 
+  }
+
+  onResize(event:any):void {
+    this.view = [event.target.innerWidth, event.target.innerHeight - 250];
   }
 
   onSelect(event: { name: string }): void {
