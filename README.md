@@ -30,6 +30,7 @@
 * Add ability to drill down on a specific field
 * Load correct data and filters based on #route
 * Add ability to limit results via date range
+* Add ability to limit results vby msec
 * Allow clicking unique ids to see the full log
 * Create enums for fields and data types
 * Combine unique calls into single msec and take average
