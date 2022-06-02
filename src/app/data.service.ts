@@ -312,10 +312,10 @@ export class DataService {
             .replaceAll(/uniqueCallId=.+&?/g, '')
             .replaceAll(/start=.+&?/g, '')
             // .replaceAll(/\(([^)]+)\)/g, '') // parenthesis
-            .replaceAll(/IN ([0-9]+,*)+/g, 'IN') // IN (1, 2, 3)
+            .replaceAll(/IN ([0-9]+,*)+/g, 'IN (?)') // IN (1, 2, 3)
             .replaceAll(/[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}\+[0-9]{2}:[0-9]{2}/g, '?') // timestamp
             .replaceAll(/([=<>])+(\s)*'*[0-9]+'*&?/g, '&') // '13144' OR 42421
-            .replaceAll(/([=<>])+(\s)*'.+'&?/g, '&'); '3f23fr3'
+            .replaceAll(/([=<>])+(\s)*'.+'&?/g, '&'); // '3f23fr3'
 
           let entry: EntryModel | undefined = results.find(
             (result: any) => {
