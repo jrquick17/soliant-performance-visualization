@@ -12,18 +12,20 @@ export class BarChartComponent {
   public chartHeight = 1000;
   public chartWidth = 1500;
   public display: string = 'graph';
-  public displayValues: any[] = [];
-  public uniqueValues: any[] = [];
   public isLoading: boolean = true;
-  public results: EntryModel[] = [];
-  public data: string = 'soliantInvoice';
-  public types: string[] = ['orderBy'];
   public xAxisLabel = 'Fields';
   public yAxisLabel = 'Avg (MS)';
+
+  public data!: string;
+  public displayValues!: any[];
+  public results!: EntryModel[];
+  public types!: string[];
+  public uniqueValues!: any[];
 
   constructor(
     private dataService: DataService
   ) {
+    this.reset();
     this.loadData();
   }
 
@@ -91,5 +93,13 @@ export class BarChartComponent {
       this.displayValues = entry.data;
       this.uniqueValues = entry.uniqueIDs;
     }
+  }
+
+  reset():void {
+    this.data = 'soliantInvoice';
+    this.displayValues = [];
+    this.results = [];
+    this.types = ['fields'];
+    this.uniqueValues = [];
   }
 }

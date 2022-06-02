@@ -27,7 +27,6 @@
 
 ## To Do ##
 * Add new graph for tallying common requests
-* Add button to clear data
 * Add ability to drill down on a specific field
 * Load correct data and filters based on #route
 * Add ability to limit results via date range
