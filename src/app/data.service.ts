@@ -212,10 +212,21 @@ export class DataService {
     return results;
   }
 
-  private _isExcludedField(field: string): boolean {
+  private _isExcludedField(field: string|string[]): boolean {
+    let fields:string[];
+    if (typeof field === 'string') {
+      fields = [field];
+    } else {
+      fields = field;
+    }
+
     return this.excludedFields.some(
       (blacklistedField) => {
-        return blacklistedField.toLowerCase() === field.toLowerCase();
+        return (fields).some(
+          (field) => {
+            return blacklistedField.toLowerCase() === field.toLowerCase();
+          }
+        );
       }
     );
   }
@@ -247,45 +258,95 @@ export class DataService {
 
         let names = DataService._getNames(type, query);
 
-        if (names.length !== 0) {
-          names.forEach(
-            (name: string) => {
-              if (this._isExcludedField(name)) {
-                return;
-              }
-
-              let entry: EntryModel | undefined = results.find(
-                (result: any) => {
-                  return result.name === name;
+        if (false) {
+          if (names.length !== 0) {
+            names.forEach(
+              (name: string) => {
+                if (this._isExcludedField(name)) {
+                  return;
                 }
-              );
 
-              if (!entry) {
-                entry = {
-                  name: name,
-                  query: query,
-                  count: 0,
-                  total: 0,
-                  value: 0,
-                  data: [],
-                  uniqueIDs: []
-                };
+                let entry: EntryModel | undefined = results.find(
+                  (result: any) => {
+                    return result.name === name;
+                  }
+                );
 
-                results.push(entry);
+                if (!entry) {
+                  entry = {
+                    name: name,
+                    query: query,
+                    count: 0,
+                    total: 0,
+                    value: 0,
+                    data: [],
+                    uniqueIDs: []
+                  };
+
+                  results.push(entry);
+                }
+
+                entry.count++;
+                entry.total += value;
+                entry.value = entry.total / entry.count;
+
+                entry.data.push(JSON.stringify(row));
+
+                const uniqueIDs: string[] = DataService.getUniqueCallID(query);
+                if (uniqueIDs.length !== 0) {
+                  entry.uniqueIDs.push(uniqueIDs[0]);
+                }
               }
+            );
+          }
+        } else {
+          if (this._isExcludedField(names)) {
+            return;
+          }
 
-              entry.count++;
-              entry.total += value;
-              entry.value = entry.total / entry.count;
+          query = query
+            .replaceAll('showTotalMatched=true', '')
+            .replaceAll('showTotalMatched=false', '')
+            .replaceAll(/count=[0-9]*&?/g, '')
+            .replaceAll(/BhRestToken=.+&?/g, '')
+            .replaceAll(/uniqueCallId=.+&?/g, '')
+            .replaceAll(/start=.+&?/g, '')
+            // .replaceAll(/\(([^)]+)\)/g, '') // parenthesis
+            .replaceAll(/IN ([0-9]+,*)+/g, 'IN') // IN (1, 2, 3)
+            .replaceAll(/[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}\.[0-9]{3}\+[0-9]{2}:[0-9]{2}/g, '?') // timestamp
+            .replaceAll(/([=<>])+(\s)*'*[0-9]+'*&?/g, '&') // '13144' OR 42421
+            .replaceAll(/([=<>])+(\s)*'.+'&?/g, '&'); '3f23fr3'
 
-              entry.data.push(JSON.stringify(row));
-
-              const uniqueIDs: string[] = DataService.getUniqueCallID(query);
-              if (uniqueIDs.length !== 0) {
-                entry.uniqueIDs.push(uniqueIDs[0]);
-              }
+          let entry: EntryModel | undefined = results.find(
+            (result: any) => {
+              return result.name === query;
             }
           );
+
+          if (!entry) {
+            entry = {
+              name: query,
+              query: query,
+              count: 0,
+              total: 0,
+              value: 0,
+              data: [],
+              uniqueIDs: []
+            };
+
+            results.push(entry);
+          }
+
+          entry.count++;
+          entry.total++;
+          entry.value = entry.total;
+
+          entry.data.push(JSON.stringify(row));
+
+          const uniqueIDs: string[] = DataService.getUniqueCallID(query);
+          if (uniqueIDs.length !== 0) {
+            entry.uniqueIDs.push(uniqueIDs[0]);
+          }
         }
       }
     );

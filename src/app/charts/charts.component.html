@@ -59,7 +59,12 @@
 </div>
 
 <div *ngIf="!isLoading">
-  <app-field-performance [displayValues]="displayValues"
-                         [results]="results"
-                         [uniqueValues]="uniqueValues"></app-field-performance>
+<!--  <app-field-performance [displayValues]="displayValues"-->
+<!--                         [results]="results"-->
+<!--                         [uniqueValues]="uniqueValues"></app-field-performance>-->
+
+  <app-common-requests [display]="display"
+                       [displayValues]="displayValues"
+                       [results]="results"
+                       [uniqueValues]="uniqueValues"></app-common-requests>
 </div>

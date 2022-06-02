@@ -10,12 +10,14 @@ import {HttpClientModule} from '@angular/common/http';
 import {NgxCsvParserModule} from 'ngx-csv-parser';
 import {DataService} from './data.service';
 import {ChartsComponent} from './charts/charts.component';
+import {CommonRequestsComponent} from './common-requests/common-requests.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     FieldPerformanceComponent,
-    ChartsComponent
+    ChartsComponent,
+    CommonRequestsComponent
   ],
   imports: [
     BrowserModule,

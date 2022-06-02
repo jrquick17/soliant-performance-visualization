@@ -2,16 +2,16 @@ import {Component, Input} from '@angular/core';
 import {EntryModel} from '../entry.model';
 
 @Component({
-  selector: 'app-field-performance',
-  templateUrl: './field-performance.component.html',
-  styleUrls: ['./field-performance.component.scss']
+  selector: 'app-common-requests',
+  templateUrl: './common-requests.component.html',
+  styleUrls: ['./common-requests.component.scss']
 })
-export class FieldPerformanceComponent {
+export class CommonRequestsComponent {
   @Input() public chartHeight = 1000;
   @Input() public chartWidth = 1500;
   @Input() public display = 'graph';
   @Input() public xAxisLabel = 'Fields';
-  @Input() public yAxisLabel = 'Avg (MS)';
+  @Input() public yAxisLabel = 'Count';
 
   @Input() public displayValues: any[] = [];
   @Input() public results: EntryModel[] = [];
