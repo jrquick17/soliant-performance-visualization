@@ -153,17 +153,36 @@ export class DataService {
         fields = fields.slice(0, lastIndex);
       }
 
-      fields = fields.replace('-', '')
-        .replace('+', '')
-        .replace(')', '')
-        .replace('(', '')
-        .replace(',', '')
-        .replace('\'', '');
+      const fieldArray = fields.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+      fieldArray.forEach(
+        (field) => {
+          let parenthesis:string[]|null = field.match(/\(([^)]+)\)/g);
+          if (parenthesis !== null) {
+            const parenthesisContent = parenthesis[0]
+              .replace('(', '')
+              .replace(')', '');
 
-      results = results.concat(fields.split(split));
+            field = field.substring(0, field.indexOf('(') - 1)
+
+            const parenthesisFields = parenthesisContent.split(split);
+            parenthesisFields.forEach(
+              (parenthesisField) => {
+                results.push(field + '.' + parenthesisField);
+              }
+            );
+          } else {
+            results.push(field);
+          }
+        }
+      );
     }
 
-    return results;
+    return results.map(
+      (result) => {
+        return result.replace('-', '')
+          .replace('+', '');
+      }
+    );
   }
 
   private static getShowName(query: string): string[] {
