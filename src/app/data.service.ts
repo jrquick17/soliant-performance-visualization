@@ -162,7 +162,7 @@ export class DataService {
               .replace('(', '')
               .replace(')', '');
 
-            field = field.substring(0, field.indexOf('(') - 1)
+            field = field.substring(0, field.indexOf('('))
 
             const parenthesisFields = parenthesisContent.split(split);
             parenthesisFields.forEach(
